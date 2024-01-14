@@ -1,3 +1,4 @@
+-- for backwards compatibility
 local utils = require('orgmode.utils')
 local fs = require('orgmode.utils.fs')
 
@@ -46,6 +47,11 @@ end
 
 ---@return boolean
 function Url:is_org_link()
+  vim.g.links = {
+    self:get_dedicated_target(),
+    self:get_custom_id(),
+    self:get_headline(),
+  }
   return (self:get_dedicated_target() or self:get_custom_id() or self:get_headline()) and true
 end
 
@@ -157,6 +163,7 @@ function Url:get_filepath()
       or self.str:match('^(%./)$')
       or self.str:match('^(/)$')
 end
+
 --
 ---@return string
 function Url:get_headline_completion()

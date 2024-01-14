@@ -797,6 +797,7 @@ end
 
 function OrgMappings:open_at_point()
   local link = self:_get_link_under_cursor()
+  vim.g.link = link
   if not link then
     local date = self:_get_date_under_cursor()
     if date then
@@ -825,7 +826,19 @@ function OrgMappings:open_at_point()
     end
     return vim.fn['netrw#BrowseX'](url, vim.fn['netrw#CheckIfRemote']())
   elseif not link.url:is_org_link() then
-    utils.echo_warning(string.format('Unsupported link format: %q', url))
+    local result = {}
+    for part in string.gmatch(url, '([^:]+)') do
+      table.insert(result, part)
+    end
+    local link_type = result[1]
+    local link_value = result[2]
+
+    if link_type == 'id' then
+      -- current org roam provide this function
+      vim.fn.open_id_link_at(link_value)
+    else
+      utils.echo_warning(string.format('Unsupported link format: %q', url))
+    end
     return
   end
 
