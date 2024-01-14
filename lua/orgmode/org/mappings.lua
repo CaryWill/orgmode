@@ -797,7 +797,6 @@ end
 
 function OrgMappings:open_at_point()
   local link = self:_get_link_under_cursor()
-  vim.g.link = link
   if not link then
     local date = self:_get_date_under_cursor()
     if date then
